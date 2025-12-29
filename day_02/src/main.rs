@@ -29,9 +29,12 @@ fn check_for_split_repeats(range: &[i64]) -> i64 {
 fn check_for_all_repeats(range: &[i64]) -> i64 {
     let max_split_digits = range[1].to_string().len() / 2;
 
-    let all_invalid: HashSet<i64> = (range[0]..range[1] + 1)
+    let all_invalid: HashSet<i64> = (range[0]..range[1])
         .filter(|val| {
             let char_vals: Vec<char> = val.to_string().chars().collect();
+            if char_vals.len() == 1 {
+                return false;
+            }
             let mut is_valid = false;
             for x in (1..max_split_digits + 1) {
                 let chunks: Vec<_> = char_vals.chunks(x).collect();
@@ -54,6 +57,6 @@ fn main() {
         .map(|val| check_for_split_repeats(val))
         .sum();
     println!("Part 1: {:?}", part_1);
-    let part_2: i64 = input.iter().map(|val| check_for_all_repeats(val)).sum();
+    let part_2: i64 = input.par_iter().map(|val| check_for_all_repeats(val)).sum();
     println!("Part 2: {:?}", part_2);
 }
